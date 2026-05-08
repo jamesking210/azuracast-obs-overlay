@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AzuraCast OBS Overlay</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js"></script>
+</head>
+
+<body class="overlay-page">
+  <main class="stage" aria-label="OBS overlay">
+    <div class="bar">
+      <div class="live">LIVE</div>
+
+      <div id="stationName" class="station">Station</div>
+
+      <div class="divider"></div>
+
+      <div id="currentTrack" class="track">
+        Waiting for AzuraCast metadata...
+      </div>
+
+      <div class="progress">
+        <div id="elapsedTime" class="time">--:--</div>
+        <div class="progress-bar">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+        <div id="durationTime" class="time">--:--</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="upnext">
+        <span class="upnext-label">UP NEXT</span>
+        <span id="upNext" class="upnext-value">Station</span>
+      </div>
+    </div>
+  </main>
+
+  <audio id="stationAudio" preload="none" crossorigin="anonymous"></audio>
+
+  <script src="/app.js"></script>
+</body>
+</html>

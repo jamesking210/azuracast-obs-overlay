@@ -1,0 +1,257 @@
+:root {
+  --ticker-height: 52px;
+  --cyan: #00e5ff;
+  --gold: #ffd166;
+  --red: #ff5b5b;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+.overlay-page {
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  overflow: hidden;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  overflow: hidden;
+}
+
+.bar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw;
+  height: var(--ticker-height);
+  display: grid;
+  grid-template-columns: 78px 230px 1px minmax(0, 1fr) 330px 1px 500px;
+  align-items: center;
+  gap: 12px;
+  padding: 0 14px;
+  overflow: hidden;
+  color: #ffffff;
+  background:
+    linear-gradient(
+      90deg,
+      rgba(0, 0, 0, 0.92),
+      rgba(4, 16, 22, 0.95),
+      rgba(0, 0, 0, 0.92)
+    );
+  border-top: 2px solid rgba(0, 229, 255, 0.95);
+  border-bottom: 2px solid rgba(0, 229, 255, 0.55);
+  box-shadow: inset 0 0 14px rgba(0, 229, 255, 0.08);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95);
+}
+
+.live {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: rgba(255, 59, 59, 0.15);
+  border: 1px solid rgba(255, 59, 59, 0.72);
+  color: var(--red);
+  font-size: 17px;
+  font-weight: 1000;
+  letter-spacing: 1px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.station {
+  color: var(--cyan);
+  font-size: 25px;
+  font-weight: 1000;
+  letter-spacing: -0.4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.divider {
+  width: 1px;
+  height: 28px;
+  background: rgba(0, 229, 255, 0.32);
+}
+
+.track {
+  min-width: 0;
+  color: #ffffff;
+  font-size: 27px;
+  font-weight: 1000;
+  letter-spacing: -0.35px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+}
+
+.progress {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  overflow: hidden;
+  white-space: nowrap;
+  min-width: 0;
+}
+
+.time {
+  width: 62px;
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 1000;
+  text-align: center;
+  line-height: 1;
+  white-space: nowrap;
+  overflow: visible;
+  flex-shrink: 0;
+}
+
+.progress-bar {
+  position: relative;
+  width: 130px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(0, 229, 255, 0.28);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.progress-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, #00d8ff, #7ff6ff);
+}
+
+.upnext {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.upnext-label {
+  color: var(--gold);
+  font-size: 21px;
+  font-weight: 1000;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.upnext-value {
+  min-width: 0;
+  color: #ffffff;
+  font-size: 21px;
+  font-weight: 1000;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1;
+  text-align: right;
+}
+
+.help-page {
+  min-height: 100vh;
+  padding: 32px;
+  color: #ffffff;
+  background:
+    radial-gradient(circle at top left, rgba(0, 229, 255, 0.22), transparent 35%),
+    linear-gradient(135deg, #02060a, #07151d 55%, #02060a);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+.help-card {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 28px;
+  border: 1px solid rgba(0, 229, 255, 0.35);
+  border-radius: 24px;
+  background: rgba(0, 0, 0, 0.62);
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.45);
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  color: var(--cyan);
+  font-weight: 1000;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.help-card h1 {
+  margin: 0 0 28px;
+  font-size: 40px;
+  line-height: 1.05;
+}
+
+.help-card section {
+  margin-top: 26px;
+  padding-top: 22px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.help-card h2 {
+  margin: 0 0 12px;
+  color: var(--gold);
+  font-size: 22px;
+}
+
+.help-card p {
+  color: rgba(255, 255, 255, 0.82);
+  line-height: 1.45;
+}
+
+.copy-box {
+  padding: 18px;
+  border-radius: 16px;
+  background: rgba(0, 229, 255, 0.08);
+  border: 1px solid rgba(0, 229, 255, 0.2);
+  font-size: 18px;
+  line-height: 1.75;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 999px;
+  padding: 12px 18px;
+  background: var(--cyan);
+  color: #001016;
+  font-weight: 1000;
+  font-size: 16px;
+}
+
+.status {
+  font-weight: 700;
+}
+
+a {
+  color: var(--cyan);
+}

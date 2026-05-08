@@ -1,0 +1,11 @@
+services:
+  azuracast-obs-overlay:
+    build: .
+    container_name: azuracast-obs-overlay
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${OVERLAY_PORT:-8089}:80"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

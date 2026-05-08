@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AzuraCast OBS Overlay Help</title>
+  <link rel="stylesheet" href="/styles.css" />
+  <script src="/config.js"></script>
+</head>
+
+<body class="help-page">
+  <main class="help-card">
+    <p class="eyebrow">AzuraCast OBS Overlay</p>
+    <h1 id="helpTitle">Station OBS Overlay</h1>
+
+    <section>
+      <h2>OBS Browser Source</h2>
+      <div class="copy-box">
+        <div><strong>URL:</strong> <span id="currentUrl">https://overlay.yourdomain.com</span></div>
+        <div><strong>Width:</strong> 1920</div>
+        <div><strong>Height:</strong> 1080</div>
+        <div><strong>Check:</strong> Control audio via OBS</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Audio test</h2>
+      <p>
+        Normal browsers often block autoplay. OBS usually allows it.
+        Use this button only to test the stream in a normal browser.
+      </p>
+      <button id="audioButton" type="button">Start station audio</button>
+      <p id="audioStatus" class="status">Audio is stopped.</p>
+    </section>
+
+    <section>
+      <h2>Local test links</h2>
+      <p><a href="/">Open the transparent OBS overlay</a></p>
+      <p><a href="/api/nowplaying_static" target="_blank" rel="noreferrer">Test now playing JSON</a></p>
+      <p><a href="/radio.mp3" target="_blank" rel="noreferrer">Test station stream</a></p>
+    </section>
+  </main>
+
+  <audio id="helpAudio" preload="none" crossorigin="anonymous"></audio>
+
+  <script>
+    const cfg = window.OVERLAY_CONFIG || {};
+    const stationName = cfg.stationName || "Station";
+
+    document.title = `${stationName} OBS Overlay Help`;
+    document.getElementById("helpTitle").textContent = `${stationName} OBS Overlay`;
+    document.getElementById("currentUrl").textContent = window.location.origin;
+
+    const audio = document.getElementById("helpAudio");
+    const button = document.getElementById("audioButton");
+    const status = document.getElementById("audioStatus");
+
+    audio.src = cfg.streamUrl || "/radio.mp3";
+    audio.volume = Number(cfg.audioVolume ?? 1);
+
+    button.addEventListener("click", async () => {
+      if (audio.paused) {
+        try {
+          await audio.play();
+          button.textContent = "Stop station audio";
+          status.textContent = "Audio is playing.";
+        } catch (err) {
+          status.textContent = "Browser blocked audio. Try again or test in OBS.";
+        }
+      } else {
+        audio.pause();
+        button.textContent = "Start station audio";
+        status.textContent = "Audio is stopped.";
+      }
+    });
+  </script>
+</body>
+</html>
