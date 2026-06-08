@@ -21,9 +21,12 @@
       <div class="divider"></div>
 
       <div class="player-block">
-        <div id="elapsedTime" class="time elapsed-time">--:--</div>
+        <div class="time-stack elapsed-stack">
+          <div class="time-label">ELAPSED</div>
+          <div id="elapsedTime" class="time elapsed-time">--:--</div>
+        </div>
 
-        <span class="now-label">NOW PLAYING:</span>
+        <span class="now-label">NOW PLAYING</span>
 
         <div id="currentArtworkSlot" class="artwork-slot current-artwork-slot" title="Current track artwork">
           <img id="currentArtwork" class="track-artwork" alt="" />
@@ -31,13 +34,16 @@
 
         <div id="currentTrack" class="track">Waiting for AzuraCast metadata...</div>
 
-        <div id="remainingTime" class="time remaining-time">-:--</div>
+        <div class="time-stack remaining-stack">
+          <div class="time-label">REMAIN</div>
+          <div id="remainingTime" class="time remaining-time">-:--</div>
+        </div>
       </div>
 
       <div class="divider"></div>
 
       <div class="next-block">
-        <span class="next-label">NEXT:</span>
+        <span class="next-label">NEXT</span>
 
         <div id="nextArtworkSlot" class="artwork-slot next-artwork-slot" title="Next artwork">
           <img id="nextArtwork" class="track-artwork" alt="" />

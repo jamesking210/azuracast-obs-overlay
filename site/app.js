@@ -18,7 +18,6 @@
   const upNextEl = document.getElementById("upNext");
   const elapsedTimeEl = document.getElementById("elapsedTime");
   const remainingTimeEl = document.getElementById("remainingTime");
-  const progressFillEl = document.getElementById("progressFill");
   const audioEl = document.getElementById("stationAudio");
 
   const API_URL = cfg.nowPlayingUrl || "/api/nowplaying_static";
@@ -180,10 +179,6 @@
 
     if (remainingTimeEl) {
       remainingTimeEl.textContent = hasDuration ? `-${formatTime(remaining)}` : "-:--";
-    }
-
-    if (progressFillEl) {
-      progressFillEl.style.width = `${safePercent}%`;
     }
 
     root.style.setProperty("--bar-progress", hasDuration ? `${safePercent}%` : "0%");
