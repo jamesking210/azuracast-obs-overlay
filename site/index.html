@@ -11,17 +11,18 @@
 <body class="overlay-page">
   <main class="stage" aria-label="OBS overlay">
     <div class="bar">
-      <div id="artworkSlot" class="artwork-slot" title="Current track artwork">
-        <img id="trackArtwork" class="track-artwork" alt="" />
-        <div id="artworkFallback" class="artwork-fallback">LIVE</div>
-      </div>
-
       <div id="stationName" class="station">Station</div>
 
       <div class="divider"></div>
 
-      <div id="currentTrack" class="track">
-        Waiting for AzuraCast metadata...
+      <div class="currently-playing">
+        <span class="currently-label">CURRENTLY PLAYING:</span>
+        <div id="currentArtworkSlot" class="artwork-slot current-artwork-slot" title="Current track artwork">
+          <img id="currentArtwork" class="track-artwork" alt="" />
+        </div>
+        <div id="currentTrack" class="track">
+          Waiting for AzuraCast metadata...
+        </div>
       </div>
 
       <div class="progress">
@@ -36,6 +37,9 @@
 
       <div class="upnext">
         <span class="upnext-label">UP NEXT</span>
+        <div id="nextArtworkSlot" class="artwork-slot next-artwork-slot" title="Up next artwork">
+          <img id="nextArtwork" class="track-artwork" alt="" />
+        </div>
         <span id="upNext" class="upnext-value">Station</span>
       </div>
     </div>

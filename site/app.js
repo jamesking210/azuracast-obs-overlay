@@ -7,9 +7,10 @@
   const root = document.documentElement;
   root.style.setProperty("--ticker-height", `${Number(cfg.tickerHeight || 52)}px`);
 
-  const artworkSlotEl = document.getElementById("artworkSlot");
-  const trackArtworkEl = document.getElementById("trackArtwork");
-  const artworkFallbackEl = document.getElementById("artworkFallback");
+  const currentArtworkSlotEl = document.getElementById("currentArtworkSlot");
+  const currentArtworkEl = document.getElementById("currentArtwork");
+  const nextArtworkSlotEl = document.getElementById("nextArtworkSlot");
+  const nextArtworkEl = document.getElementById("nextArtwork");
   const stationNameEl = document.getElementById("stationName");
   const currentTrackEl = document.getElementById("currentTrack");
   const upNextEl = document.getElementById("upNext");
@@ -58,14 +59,18 @@
     return fallback;
   }
 
+  function getArtworkUrl(songObj) {
+    if (!songObj) return "";
 
-  function getArtworkUrl(data) {
+    const song = songObj.song || songObj;
     const candidates = [
-      data?.now_playing?.song?.art,
-      data?.now_playing?.song?.album_art,
-      data?.now_playing?.song?.artwork,
-      data?.now_playing?.art,
-      data?.song_history?.[0]?.song?.art
+      song.art,
+      song.album_art,
+      song.artwork,
+      song.thumbnail,
+      songObj.art,
+      songObj.album_art,
+      songObj.artwork
     ];
 
     const found = candidates.find((value) => clean(value));
@@ -82,22 +87,18 @@
 
       const parsed = new URL(url);
 
-      if (AZURACAST_BASE_URL) {
-        const azura = new URL(AZURACAST_BASE_URL);
-
-        if (
-          parsed.hostname === azura.hostname &&
-          parsed.pathname.startsWith("/api/station/")
-        ) {
-          return `${parsed.pathname}${parsed.search}`;
-        }
+      // AzuraCast artwork usually lives under /api/station/.
+      // Rewrite that to this overlay's own hostname so OBS never needs to reach
+      // host.docker.internal or deal with mixed public/internal URLs.
+      if (parsed.pathname.startsWith("/api/station/")) {
+        return `${parsed.pathname}${parsed.search}`;
       }
 
-      if (
-        parsed.hostname === "host.docker.internal" &&
-        parsed.pathname.startsWith("/api/station/")
-      ) {
-        return `${parsed.pathname}${parsed.search}`;
+      if (AZURACAST_BASE_URL) {
+        const azura = new URL(AZURACAST_BASE_URL);
+        if (parsed.hostname === azura.hostname && parsed.pathname.startsWith("/api/")) {
+          return `${parsed.pathname}${parsed.search}`;
+        }
       }
 
       return url;
@@ -106,26 +107,26 @@
     }
   }
 
-  function setArtwork(url) {
-    if (!artworkSlotEl || !trackArtworkEl) return;
+  function setArtwork(slotEl, imgEl, url) {
+    if (!slotEl || !imgEl) return;
 
     if (!url) {
-      artworkSlotEl.classList.remove("has-artwork");
-      trackArtworkEl.removeAttribute("src");
+      slotEl.classList.remove("has-artwork");
+      imgEl.removeAttribute("src");
       return;
     }
 
-    trackArtworkEl.onload = () => {
-      artworkSlotEl.classList.add("has-artwork");
+    imgEl.onload = () => {
+      slotEl.classList.add("has-artwork");
     };
 
-    trackArtworkEl.onerror = () => {
-      artworkSlotEl.classList.remove("has-artwork");
-      trackArtworkEl.removeAttribute("src");
+    imgEl.onerror = () => {
+      slotEl.classList.remove("has-artwork");
+      imgEl.removeAttribute("src");
     };
 
-    if (trackArtworkEl.src !== url) {
-      trackArtworkEl.src = url;
+    if (imgEl.src !== url) {
+      imgEl.src = url;
     }
   }
 
@@ -197,7 +198,8 @@
 
       const currentTrack = formatSong(data.now_playing, FALLBACK_TRACK);
       const upNext = formatSong(data.playing_next, FALLBACK_UP_NEXT);
-      const artworkUrl = getArtworkUrl(data);
+      const currentArtworkUrl = getArtworkUrl(data.now_playing);
+      const nextArtworkUrl = getArtworkUrl(data.playing_next);
 
       currentElapsed = Number(data.now_playing?.elapsed ?? 0);
       currentDuration = Number(data.now_playing?.duration ?? 0);
@@ -208,7 +210,8 @@
       upNextEl.textContent = upNext;
       upNextEl.title = upNext;
 
-      setArtwork(artworkUrl);
+      setArtwork(currentArtworkSlotEl, currentArtworkEl, currentArtworkUrl);
+      setArtwork(nextArtworkSlotEl, nextArtworkEl, nextArtworkUrl);
 
       renderProgress();
       startProgressTimer();
@@ -221,7 +224,9 @@
       currentElapsed = 0;
       currentDuration = 0;
 
-      setArtwork("");
+      setArtwork(currentArtworkSlotEl, currentArtworkEl, "");
+      setArtwork(nextArtworkSlotEl, nextArtworkEl, "");
+
       renderProgress();
       requestAnimationFrame(fitAllText);
     }
