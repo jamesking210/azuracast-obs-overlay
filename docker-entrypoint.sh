@@ -2,6 +2,7 @@
 set -eu
 
 : "${STATION_NAME:=Your Station Name}"
+: "${STATION_LOGO_URL:=}"
 : "${AZURACAST_BASE_URL:=http://host.docker.internal}"
 : "${AZURACAST_STATION_SHORT_NAME:=station_short_name}"
 : "${AZURACAST_MOUNT_NAME:=radio.mp3}"
@@ -42,6 +43,7 @@ js_escape() {
 cat > /usr/share/nginx/html/config.js <<EOF2
 window.OVERLAY_CONFIG = {
   stationName: "$(js_escape "$STATION_NAME")",
+  stationLogoUrl: "$(js_escape "$STATION_LOGO_URL")",
   azuracastBaseUrl: "$(js_escape "$AZURACAST_BASE_URL")",
   nowPlayingUrl: "/api/nowplaying_static",
   streamUrl: "/radio.mp3",

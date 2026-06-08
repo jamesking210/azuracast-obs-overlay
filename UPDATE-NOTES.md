@@ -1,39 +1,25 @@
-# Artwork-left update
+# Logo + current + coming up layout update
 
-This replaces the LIVE pill on the left with current track artwork.
+New format:
 
-Behavior:
-
-- If AzuraCast provides artwork, the 42x42 image shows on the left.
-- If no artwork loads, it falls back to the small LIVE badge.
-- The solid bottom bar and full-width progress glow stay.
-- The small timer progress bar stays.
+[station logo] StationName  |  [current artwork] Artist - Song Title  |  elapsed / remaining progress bar  |  COMING UP: [next artwork] Song Title
 
 Files changed:
 
+- .env.example
 - site/index.html
 - site/styles.css
 - site/app.js
 - docker-entrypoint.sh
 - nginx.conf.template
 
-After uploading these to GitHub, update the server:
+New optional .env value:
 
-```bash
-cd /opt/custom-dockers/azuracast-obs-overlay
-git pull
-sudo docker compose up -d --build
-```
+STATION_LOGO_URL=
 
-Then refresh the OBS browser source cache.
+Examples:
 
-If OBS does not update right away:
+STATION_LOGO_URL=https://example.com/logo.png
+STATION_LOGO_URL=/logo.png
 
-```text
-Right-click Browser Source
-Properties
-Refresh cache of current page
-OK
-```
-
-If needed, remove and re-add the browser source.
+If blank, the logo hides cleanly.

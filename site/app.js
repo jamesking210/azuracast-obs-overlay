@@ -7,6 +7,8 @@
   const root = document.documentElement;
   root.style.setProperty("--ticker-height", `${Number(cfg.tickerHeight || 52)}px`);
 
+  const stationLogoSlotEl = document.getElementById("stationLogoSlot");
+  const stationLogoEl = document.getElementById("stationLogo");
   const currentArtworkSlotEl = document.getElementById("currentArtworkSlot");
   const currentArtworkEl = document.getElementById("currentArtwork");
   const nextArtworkSlotEl = document.getElementById("nextArtworkSlot");
@@ -15,6 +17,7 @@
   const currentTrackEl = document.getElementById("currentTrack");
   const upNextEl = document.getElementById("upNext");
   const elapsedTimeEl = document.getElementById("elapsedTime");
+  const remainingTimeEl = document.getElementById("remainingTime");
   const durationTimeEl = document.getElementById("durationTime");
   const progressFillEl = document.getElementById("progressFill");
   const audioEl = document.getElementById("stationAudio");
@@ -22,6 +25,7 @@
   const API_URL = cfg.nowPlayingUrl || "/api/nowplaying_static";
   const STREAM_URL = cfg.streamUrl || "/radio.mp3";
   const AZURACAST_BASE_URL = cfg.azuracastBaseUrl || "";
+  const STATION_LOGO_URL = cfg.stationLogoUrl || "";
   const REFRESH_MS = Number(cfg.refreshMs || 5000);
   const FALLBACK_TRACK = cfg.fallbackTrack || "Waiting for AzuraCast metadata...";
   const FALLBACK_UP_NEXT = cfg.fallbackUpNext || stationName;
@@ -43,17 +47,32 @@
     return String(value).replace(/\s+/g, " ").trim();
   }
 
-  function formatSong(songObj, fallback = FALLBACK_UP_NEXT) {
-    if (!songObj) return fallback;
+  function getSongParts(songObj) {
+    const song = songObj?.song || songObj || {};
+    return {
+      artist: clean(song.artist),
+      title: clean(song.title),
+      text: clean(song.text)
+    };
+  }
 
-    const song = songObj.song || songObj;
-    const artist = clean(song.artist);
-    const title = clean(song.title);
-    const text = clean(song.text);
+  function formatCurrentSong(songObj, fallback = FALLBACK_TRACK) {
+    const { artist, title, text } = getSongParts(songObj);
 
     if (artist && title) return `${artist} - ${title}`;
     if (text) return text;
     if (title) return title;
+    if (artist) return artist;
+
+    return fallback;
+  }
+
+  function formatComingUp(songObj, fallback = FALLBACK_UP_NEXT) {
+    const { title, text, artist } = getSongParts(songObj);
+
+    // Requested format is COMING UP: [artwork] song title.
+    if (title) return title;
+    if (text) return text;
     if (artist) return artist;
 
     return fallback;
@@ -87,9 +106,6 @@
 
       const parsed = new URL(url);
 
-      // AzuraCast artwork usually lives under /api/station/.
-      // Rewrite that to this overlay's own hostname so OBS never needs to reach
-      // host.docker.internal or deal with mixed public/internal URLs.
       if (parsed.pathname.startsWith("/api/station/")) {
         return `${parsed.pathname}${parsed.search}`;
       }
@@ -112,16 +128,18 @@
 
     if (!url) {
       slotEl.classList.remove("has-artwork");
+      slotEl.classList.remove("has-logo");
       imgEl.removeAttribute("src");
       return;
     }
 
     imgEl.onload = () => {
-      slotEl.classList.add("has-artwork");
+      slotEl.classList.add(slotEl === stationLogoSlotEl ? "has-logo" : "has-artwork");
     };
 
     imgEl.onerror = () => {
       slotEl.classList.remove("has-artwork");
+      slotEl.classList.remove("has-logo");
       imgEl.removeAttribute("src");
     };
 
@@ -132,7 +150,7 @@
 
   function formatTime(seconds) {
     seconds = Number(seconds);
-    if (!isFinite(seconds) || seconds <= 0) return "--:--";
+    if (!isFinite(seconds) || seconds < 0) return "--:--";
 
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
@@ -164,11 +182,20 @@
   function renderProgress() {
     const hasDuration = currentDuration > 0;
     const safeElapsed = Math.max(0, Math.min(currentElapsed, currentDuration || 0));
+    const remaining = hasDuration ? Math.max(0, currentDuration - safeElapsed) : 0;
     const percent = hasDuration ? (safeElapsed / currentDuration) * 100 : 0;
     const safePercent = Math.max(0, Math.min(percent, 100));
 
     elapsedTimeEl.textContent = hasDuration ? formatTime(safeElapsed) : "--:--";
-    durationTimeEl.textContent = hasDuration ? formatTime(currentDuration) : "--:--";
+
+    if (remainingTimeEl) {
+      remainingTimeEl.textContent = hasDuration ? `-${formatTime(remaining)}` : "-:--";
+    }
+
+    if (durationTimeEl) {
+      durationTimeEl.textContent = hasDuration ? formatTime(currentDuration) : "--:--";
+    }
+
     progressFillEl.style.width = `${safePercent}%`;
     root.style.setProperty("--bar-progress", hasDuration ? `${safePercent}%` : "0%");
   }
@@ -196,8 +223,8 @@
 
       const data = await response.json();
 
-      const currentTrack = formatSong(data.now_playing, FALLBACK_TRACK);
-      const upNext = formatSong(data.playing_next, FALLBACK_UP_NEXT);
+      const currentTrack = formatCurrentSong(data.now_playing, FALLBACK_TRACK);
+      const upNext = formatComingUp(data.playing_next, FALLBACK_UP_NEXT);
       const currentArtworkUrl = getArtworkUrl(data.now_playing);
       const nextArtworkUrl = getArtworkUrl(data.playing_next);
 
@@ -248,6 +275,7 @@
     }
   }
 
+  setArtwork(stationLogoSlotEl, stationLogoEl, normalizeArtworkUrl(STATION_LOGO_URL));
   updateOverlay();
   startAudio();
 

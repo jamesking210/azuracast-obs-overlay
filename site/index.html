@@ -11,33 +11,35 @@
 <body class="overlay-page">
   <main class="stage" aria-label="OBS overlay">
     <div class="bar">
-      <div id="stationName" class="station">Station</div>
+      <div class="station-block">
+        <div id="stationLogoSlot" class="station-logo-slot" title="Station logo">
+          <img id="stationLogo" class="station-logo" alt="" />
+        </div>
+        <div id="stationName" class="station">Station</div>
+      </div>
 
       <div class="divider"></div>
 
-      <div class="currently-playing">
-        <span class="currently-label">CURRENTLY PLAYING:</span>
+      <div class="now-block">
         <div id="currentArtworkSlot" class="artwork-slot current-artwork-slot" title="Current track artwork">
           <img id="currentArtwork" class="track-artwork" alt="" />
         </div>
-        <div id="currentTrack" class="track">
-          Waiting for AzuraCast metadata...
-        </div>
+        <div id="currentTrack" class="track">Waiting for AzuraCast metadata...</div>
       </div>
 
       <div class="progress">
-        <div id="elapsedTime" class="time">--:--</div>
+        <div id="elapsedTime" class="time elapsed-time">--:--</div>
         <div class="progress-bar">
           <div id="progressFill" class="progress-fill"></div>
         </div>
-        <div id="durationTime" class="time">--:--</div>
+        <div id="remainingTime" class="time remaining-time">-:--</div>
       </div>
 
       <div class="divider"></div>
 
-      <div class="upnext">
-        <span class="upnext-label">UP NEXT</span>
-        <div id="nextArtworkSlot" class="artwork-slot next-artwork-slot" title="Up next artwork">
+      <div class="coming-up">
+        <span class="coming-label">COMING UP:</span>
+        <div id="nextArtworkSlot" class="artwork-slot next-artwork-slot" title="Coming up artwork">
           <img id="nextArtwork" class="track-artwork" alt="" />
         </div>
         <span id="upNext" class="upnext-value">Station</span>

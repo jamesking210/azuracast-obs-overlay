@@ -40,7 +40,7 @@ body {
   width: 100vw;
   height: var(--ticker-height);
   display: grid;
-  grid-template-columns: 230px 1px minmax(0, 1fr) 330px 1px 500px;
+  grid-template-columns: 300px 1px minmax(0, 1fr) 300px 1px 480px;
   align-items: center;
   gap: 12px;
   padding: 0 14px;
@@ -84,23 +84,42 @@ body {
   z-index: 1;
 }
 
-.live {
-  height: 24px;
+.station-block {
+  min-width: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 999px;
-  background: rgba(255, 59, 59, 0.15);
-  border: 1px solid rgba(255, 59, 59, 0.72);
-  color: var(--red);
-  font-size: 17px;
-  font-weight: 1000;
-  letter-spacing: 1px;
-  white-space: nowrap;
+  gap: 10px;
   overflow: hidden;
+  white-space: nowrap;
+}
+
+.station-logo-slot {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #050b0f;
+  border: 1px solid rgba(0, 229, 255, 0.72);
+  box-shadow:
+    0 0 12px rgba(0, 229, 255, 0.2),
+    inset 0 0 10px rgba(0, 229, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.station-logo-slot.has-logo {
+  display: block;
+}
+
+.station-logo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .station {
+  min-width: 0;
   color: var(--cyan);
   font-size: 25px;
   font-weight: 1000;
@@ -115,6 +134,41 @@ body {
   width: 1px;
   height: 28px;
   background: rgba(0, 229, 255, 0.32);
+}
+
+.now-block {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.artwork-slot {
+  display: none;
+  width: 38px;
+  height: 38px;
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #050b0f;
+  border: 1px solid rgba(0, 229, 255, 0.72);
+  box-shadow:
+    0 0 12px rgba(0, 229, 255, 0.2),
+    inset 0 0 10px rgba(0, 229, 255, 0.08);
+  flex-shrink: 0;
+}
+
+.artwork-slot.has-artwork {
+  display: block;
+}
+
+.track-artwork {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .track {
@@ -151,9 +205,13 @@ body {
   flex-shrink: 0;
 }
 
+.remaining-time {
+  color: rgba(255, 255, 255, 0.88);
+}
+
 .progress-bar {
   position: relative;
-  width: 130px;
+  width: 128px;
   height: 8px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
@@ -171,7 +229,7 @@ body {
   background: linear-gradient(90deg, #00d8ff, #7ff6ff);
 }
 
-.upnext {
+.coming-up {
   min-width: 0;
   display: flex;
   align-items: center;
@@ -181,7 +239,7 @@ body {
   white-space: nowrap;
 }
 
-.upnext-label {
+.coming-label {
   color: var(--gold);
   font-size: 21px;
   font-weight: 1000;
@@ -189,6 +247,12 @@ body {
   white-space: nowrap;
   flex-shrink: 0;
   line-height: 1;
+}
+
+.next-artwork-slot {
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
 }
 
 .upnext-value {
@@ -203,6 +267,14 @@ body {
   text-align: right;
 }
 
+.live,
+.artwork-fallback,
+.upnext-label,
+.currently-label {
+  display: none !important;
+}
+
+/* Help page */
 .help-page {
   min-height: 100vh;
   padding: 32px;
@@ -280,62 +352,4 @@ button {
 
 a {
   color: var(--cyan);
-}
-
-
-/* Clean artwork layout */
-.currently-playing {
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  overflow: hidden;
-  white-space: nowrap;
-}
-
-.currently-label {
-  color: var(--gold);
-  font-size: 19px;
-  font-weight: 1000;
-  letter-spacing: 0.4px;
-  white-space: nowrap;
-  flex-shrink: 0;
-  line-height: 1;
-}
-
-.artwork-slot {
-  display: none;
-  width: 38px;
-  height: 38px;
-  position: relative;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #050b0f;
-  border: 1px solid rgba(0, 229, 255, 0.72);
-  box-shadow:
-    0 0 12px rgba(0, 229, 255, 0.2),
-    inset 0 0 10px rgba(0, 229, 255, 0.08);
-  flex-shrink: 0;
-}
-
-.artwork-slot.has-artwork {
-  display: block;
-}
-
-.next-artwork-slot {
-  width: 34px;
-  height: 34px;
-  border-radius: 7px;
-}
-
-.track-artwork {
-  display: block;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.artwork-fallback,
-.live {
-  display: none !important;
 }
