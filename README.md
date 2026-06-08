@@ -1,8 +1,25 @@
 # AzuraCast OBS Overlay
 
-Simple Docker-hosted OBS overlay for AzuraCast.
+A simple OBS browser overlay for AzuraCast.
 
-This gives DJs one easy browser source URL. It shows a clean 1920x1080 transparent page with the ticker locked to the bottom. It also plays the station audio through the OBS browser source.
+This is made for people running their own AzuraCast server and wanting an easy overlay for OBS. It runs in Docker, uses your AzuraCast metadata, and gives you one clean browser source URL.
+
+The overlay is a transparent 1920x1080 page with a solid bottom ticker bar. The ticker shows the station name, current song, progress timer, up next, and plays the station audio through OBS.
+
+The bottom bar is 100% opaque so it can cover the Windows taskbar or anything behind it. The background of the bar also fills as the current track plays.
+
+---
+
+## What it shows
+
+- LIVE badge
+- Station name
+- Current track
+- Song progress timer
+- Small progress bar
+- Full-width progress glow behind the ticker
+- Up next
+- Station audio in OBS
 
 ---
 
@@ -17,7 +34,7 @@ Height: 1080
 Check: Control audio via OBS
 ```
 
-Or test it locally/LAN:
+Or test it on your LAN:
 
 ```text
 URL: http://ipaddress:8089
@@ -32,7 +49,7 @@ Example:
 http://192.168.1.17:8089
 ```
 
-Help/test page:
+Help and audio test page:
 
 ```text
 http://ipaddress:8089/help
@@ -40,36 +57,40 @@ http://ipaddress:8089/help
 
 ---
 
-## Assumptions
+## The setup this is made for
 
-This is made for an AzuraCast server where AzuraCast is already running in Docker on the same machine.
+This assumes AzuraCast is already running in Docker on the same Linux/Ubuntu machine.
 
-The overlay container talks back to the host machine using:
+The overlay runs as its own Docker container and talks back to AzuraCast using:
 
 ```text
 http://host.docker.internal
 ```
 
-Default idea:
+Default setup:
 
 ```text
-AzuraCast: http://host.docker.internal
-AzuraCast port: 80
+AzuraCast: same machine
+AzuraCast local URL: http://host.docker.internal
 Overlay port: 8089
 Install folder: /opt/custom-dockers/azuracast-obs-overlay
 ```
+
+The container listens on port `8089`.
 
 ---
 
 ## One-line install
 
-Copy and paste this on the Ubuntu server:
+Run this on the server that is already running AzuraCast:
 
 ```bash
 sudo mkdir -p /opt/custom-dockers && sudo chown -R $USER:$USER /opt/custom-dockers && cd /opt/custom-dockers && git clone https://github.com/jamesking210/azuracast-obs-overlay.git && cd azuracast-obs-overlay && cp .env.example .env && nano .env && sudo docker compose up -d --build
 ```
 
-Nano save/exit:
+When nano opens, edit the `.env` file.
+
+Save and exit nano:
 
 ```text
 CTRL + O
@@ -77,17 +98,11 @@ ENTER
 CTRL + X
 ```
 
-After you close nano, Docker will build and start the overlay.
+After nano closes, Docker will build and start the overlay.
 
 ---
 
 ## Basic `.env`
-
-Edit this file:
-
-```bash
-nano /opt/custom-dockers/azuracast-obs-overlay/.env
-```
 
 Example:
 
@@ -111,7 +126,7 @@ OVERLAY_PORT=8089
 FALLBACK_UP_NEXT=
 ```
 
-`FALLBACK_UP_NEXT` can be left blank. If blank, it uses the station name.
+`FALLBACK_UP_NEXT` can be left blank. If it is blank, the overlay uses the station name.
 
 ---
 
@@ -131,7 +146,7 @@ The station short name is:
 djmixhub
 ```
 
-So use:
+So your `.env` should have:
 
 ```env
 AZURACAST_STATION_SHORT_NAME=djmixhub
@@ -155,7 +170,7 @@ The mount name is:
 radio.mp3
 ```
 
-So use:
+So your `.env` should have:
 
 ```env
 AZURACAST_MOUNT_NAME=radio.mp3
@@ -163,9 +178,36 @@ AZURACAST_MOUNT_NAME=radio.mp3
 
 ---
 
+## Start / rebuild
+
+From the project folder:
+
+```bash
+cd /opt/custom-dockers/azuracast-obs-overlay
+sudo docker compose up -d --build
+```
+
+---
+
+## Check if it is running
+
+```bash
+cd /opt/custom-dockers/azuracast-obs-overlay
+sudo docker compose ps
+```
+
+Logs:
+
+```bash
+cd /opt/custom-dockers/azuracast-obs-overlay
+sudo docker compose logs -f
+```
+
+---
+
 ## Test it
 
-On the Ubuntu server:
+On the server:
 
 ```bash
 curl -I http://localhost:8089/
@@ -173,18 +215,27 @@ curl http://localhost:8089/api/nowplaying_static
 curl -I http://localhost:8089/radio.mp3
 ```
 
-From another computer:
+From another computer on your network:
 
 ```text
 http://ipaddress:8089
 http://ipaddress:8089/help
 ```
 
+Example:
+
+```text
+http://192.168.1.17:8089
+http://192.168.1.17:8089/help
+```
+
 ---
 
 ## Cloudflare Tunnel example
 
-Point the public hostname to the overlay container:
+Point the public hostname to the overlay container.
+
+Example:
 
 ```text
 Public hostname: overlay.yourdomain.com
@@ -192,7 +243,7 @@ Service type: HTTP
 Service URL: http://your-server-ip:8089
 ```
 
-Example:
+DJMixHub example:
 
 ```text
 Public hostname: overlay.djmixhub.com
@@ -208,26 +259,34 @@ https://overlay.yourdomain.com
 
 ---
 
-## Update
+## Update later
+
+If you installed from GitHub:
 
 ```bash
-cd /opt/custom-dockers/azuracast-obs-overlay && git pull && sudo docker compose up -d --build
+cd /opt/custom-dockers/azuracast-obs-overlay
+git pull
+sudo docker compose up -d --build
 ```
+
+Then refresh the OBS browser source:
+
+```text
+Right-click Browser Source
+Properties
+Refresh cache of current page
+OK
+```
+
+If OBS still shows the old version, remove and re-add the browser source.
 
 ---
 
-## Stop
+## Stop it
 
 ```bash
-cd /opt/custom-dockers/azuracast-obs-overlay && sudo docker compose down
-```
-
----
-
-## Logs
-
-```bash
-cd /opt/custom-dockers/azuracast-obs-overlay && sudo docker compose logs -f
+cd /opt/custom-dockers/azuracast-obs-overlay
+sudo docker compose down
 ```
 
 ---
@@ -256,3 +315,23 @@ curl -I http://localhost/listen/station_short_name/radio.mp3
 ```
 
 Replace `station_short_name` with your real AzuraCast short name.
+
+---
+
+## File layout
+
+```text
+.
+├── .env.example
+├── .gitignore
+├── Dockerfile
+├── README.md
+├── docker-compose.yml
+├── docker-entrypoint.sh
+├── nginx.conf.template
+└── site
+    ├── app.js
+    ├── help.html
+    ├── index.html
+    └── styles.css
+```
