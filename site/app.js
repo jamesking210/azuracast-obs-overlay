@@ -68,11 +68,11 @@
   }
 
   function formatComingUp(songObj, fallback = FALLBACK_UP_NEXT) {
-    const { title, text, artist } = getSongParts(songObj);
+    const { artist, title, text } = getSongParts(songObj);
 
-    // Requested format is COMING UP: [artwork] song title.
-    if (title) return title;
+    if (artist && title) return `${artist} - ${title}`;
     if (text) return text;
+    if (title) return title;
     if (artist) return artist;
 
     return fallback;
