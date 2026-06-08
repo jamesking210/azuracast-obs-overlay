@@ -40,22 +40,24 @@ body {
   width: 100vw;
   height: var(--ticker-height);
   display: grid;
-  grid-template-columns: 300px 1px minmax(0, 1fr) 300px 1px 480px;
+  grid-template-columns: 245px 1px minmax(0, 1fr) 270px 1px 430px;
   align-items: center;
-  gap: 12px;
-  padding: 0 14px;
+  gap: 10px;
+  padding: 0 12px;
   overflow: hidden;
   color: #ffffff;
   background:
     linear-gradient(
       90deg,
       rgb(0, 0, 0),
-      rgb(4, 16, 22),
+      rgb(3, 13, 19),
       rgb(0, 0, 0)
     );
   border-top: 2px solid rgba(0, 229, 255, 0.95);
-  border-bottom: 2px solid rgba(0, 229, 255, 0.55);
-  box-shadow: inset 0 0 14px rgba(0, 229, 255, 0.12);
+  border-bottom: 1px solid rgba(0, 229, 255, 0.55);
+  box-shadow:
+    inset 0 0 12px rgba(0, 229, 255, 0.12),
+    0 -2px 12px rgba(0, 0, 0, 0.35);
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.95);
 }
 
@@ -69,13 +71,13 @@ body {
   background:
     linear-gradient(
       90deg,
-      rgba(0, 216, 255, 0.16),
-      rgba(0, 229, 255, 0.32),
-      rgba(127, 246, 255, 0.18)
+      rgba(0, 216, 255, 0.12),
+      rgba(0, 229, 255, 0.25),
+      rgba(127, 246, 255, 0.14)
     );
   box-shadow:
-    inset -12px 0 20px rgba(0, 229, 255, 0.24),
-    0 0 18px rgba(0, 229, 255, 0.12);
+    inset -10px 0 18px rgba(0, 229, 255, 0.2),
+    0 0 14px rgba(0, 229, 255, 0.1);
   transition: width 0.6s linear;
 }
 
@@ -88,22 +90,22 @@ body {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .station-logo-slot {
   display: none;
-  width: 38px;
-  height: 38px;
-  border-radius: 8px;
+  width: 34px;
+  height: 34px;
+  border-radius: 7px;
   overflow: hidden;
   background: #050b0f;
-  border: 1px solid rgba(0, 229, 255, 0.72);
+  border: 1px solid rgba(0, 229, 255, 0.65);
   box-shadow:
-    0 0 12px rgba(0, 229, 255, 0.2),
-    inset 0 0 10px rgba(0, 229, 255, 0.08);
+    0 0 10px rgba(0, 229, 255, 0.18),
+    inset 0 0 8px rgba(0, 229, 255, 0.08);
   flex-shrink: 0;
 }
 
@@ -121,9 +123,9 @@ body {
 .station {
   min-width: 0;
   color: var(--cyan);
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 1000;
-  letter-spacing: -0.4px;
+  letter-spacing: -0.35px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -132,31 +134,31 @@ body {
 
 .divider {
   width: 1px;
-  height: 28px;
-  background: rgba(0, 229, 255, 0.32);
+  height: 26px;
+  background: rgba(0, 229, 255, 0.28);
 }
 
 .now-block {
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 9px;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .artwork-slot {
   display: none;
-  width: 38px;
-  height: 38px;
+  width: 34px;
+  height: 34px;
   position: relative;
-  border-radius: 8px;
+  border-radius: 7px;
   overflow: hidden;
   background: #050b0f;
-  border: 1px solid rgba(0, 229, 255, 0.72);
+  border: 1px solid rgba(0, 229, 255, 0.62);
   box-shadow:
-    0 0 12px rgba(0, 229, 255, 0.2),
-    inset 0 0 10px rgba(0, 229, 255, 0.08);
+    0 0 10px rgba(0, 229, 255, 0.16),
+    inset 0 0 8px rgba(0, 229, 255, 0.08);
   flex-shrink: 0;
 }
 
@@ -174,9 +176,9 @@ body {
 .track {
   min-width: 0;
   color: #ffffff;
-  font-size: 27px;
+  font-size: 24px;
   font-weight: 1000;
-  letter-spacing: -0.35px;
+  letter-spacing: -0.28px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -187,35 +189,36 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 7px;
   overflow: hidden;
   white-space: nowrap;
   min-width: 0;
 }
 
 .time {
-  width: 62px;
+  width: 54px;
   color: #ffffff;
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 1000;
   text-align: center;
   line-height: 1;
   white-space: nowrap;
   overflow: visible;
   flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
 }
 
 .remaining-time {
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.84);
 }
 
 .progress-bar {
   position: relative;
-  width: 128px;
-  height: 8px;
+  width: 108px;
+  height: 7px;
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(0, 229, 255, 0.28);
+  border: 1px solid rgba(0, 229, 255, 0.26);
   overflow: hidden;
   flex-shrink: 0;
 }
@@ -234,31 +237,31 @@ body {
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 10px;
+  gap: 8px;
   overflow: hidden;
   white-space: nowrap;
 }
 
 .coming-label {
   color: var(--gold);
-  font-size: 21px;
+  font-size: 18px;
   font-weight: 1000;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.35px;
   white-space: nowrap;
   flex-shrink: 0;
   line-height: 1;
 }
 
 .next-artwork-slot {
-  width: 34px;
-  height: 34px;
+  width: 32px;
+  height: 32px;
   border-radius: 7px;
 }
 
 .upnext-value {
   min-width: 0;
   color: #ffffff;
-  font-size: 21px;
+  font-size: 19px;
   font-weight: 1000;
   white-space: nowrap;
   overflow: hidden;
