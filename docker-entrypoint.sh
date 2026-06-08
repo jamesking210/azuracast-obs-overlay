@@ -42,6 +42,7 @@ js_escape() {
 cat > /usr/share/nginx/html/config.js <<EOF2
 window.OVERLAY_CONFIG = {
   stationName: "$(js_escape "$STATION_NAME")",
+  azuracastBaseUrl: "$(js_escape "$AZURACAST_BASE_URL")",
   nowPlayingUrl: "/api/nowplaying_static",
   streamUrl: "/radio.mp3",
   audioAutoplay: $AUDIO_AUTOPLAY,

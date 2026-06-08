@@ -7,6 +7,9 @@
   const root = document.documentElement;
   root.style.setProperty("--ticker-height", `${Number(cfg.tickerHeight || 52)}px`);
 
+  const artworkSlotEl = document.getElementById("artworkSlot");
+  const trackArtworkEl = document.getElementById("trackArtwork");
+  const artworkFallbackEl = document.getElementById("artworkFallback");
   const stationNameEl = document.getElementById("stationName");
   const currentTrackEl = document.getElementById("currentTrack");
   const upNextEl = document.getElementById("upNext");
@@ -17,6 +20,7 @@
 
   const API_URL = cfg.nowPlayingUrl || "/api/nowplaying_static";
   const STREAM_URL = cfg.streamUrl || "/radio.mp3";
+  const AZURACAST_BASE_URL = cfg.azuracastBaseUrl || "";
   const REFRESH_MS = Number(cfg.refreshMs || 5000);
   const FALLBACK_TRACK = cfg.fallbackTrack || "Waiting for AzuraCast metadata...";
   const FALLBACK_UP_NEXT = cfg.fallbackUpNext || stationName;
@@ -52,6 +56,77 @@
     if (artist) return artist;
 
     return fallback;
+  }
+
+
+  function getArtworkUrl(data) {
+    const candidates = [
+      data?.now_playing?.song?.art,
+      data?.now_playing?.song?.album_art,
+      data?.now_playing?.song?.artwork,
+      data?.now_playing?.art,
+      data?.song_history?.[0]?.song?.art
+    ];
+
+    const found = candidates.find((value) => clean(value));
+    return found ? normalizeArtworkUrl(clean(found)) : "";
+  }
+
+  function normalizeArtworkUrl(url) {
+    if (!url) return "";
+
+    try {
+      if (url.startsWith("/")) {
+        return url;
+      }
+
+      const parsed = new URL(url);
+
+      if (AZURACAST_BASE_URL) {
+        const azura = new URL(AZURACAST_BASE_URL);
+
+        if (
+          parsed.hostname === azura.hostname &&
+          parsed.pathname.startsWith("/api/station/")
+        ) {
+          return `${parsed.pathname}${parsed.search}`;
+        }
+      }
+
+      if (
+        parsed.hostname === "host.docker.internal" &&
+        parsed.pathname.startsWith("/api/station/")
+      ) {
+        return `${parsed.pathname}${parsed.search}`;
+      }
+
+      return url;
+    } catch (err) {
+      return url;
+    }
+  }
+
+  function setArtwork(url) {
+    if (!artworkSlotEl || !trackArtworkEl) return;
+
+    if (!url) {
+      artworkSlotEl.classList.remove("has-artwork");
+      trackArtworkEl.removeAttribute("src");
+      return;
+    }
+
+    trackArtworkEl.onload = () => {
+      artworkSlotEl.classList.add("has-artwork");
+    };
+
+    trackArtworkEl.onerror = () => {
+      artworkSlotEl.classList.remove("has-artwork");
+      trackArtworkEl.removeAttribute("src");
+    };
+
+    if (trackArtworkEl.src !== url) {
+      trackArtworkEl.src = url;
+    }
   }
 
   function formatTime(seconds) {
@@ -122,6 +197,7 @@
 
       const currentTrack = formatSong(data.now_playing, FALLBACK_TRACK);
       const upNext = formatSong(data.playing_next, FALLBACK_UP_NEXT);
+      const artworkUrl = getArtworkUrl(data);
 
       currentElapsed = Number(data.now_playing?.elapsed ?? 0);
       currentDuration = Number(data.now_playing?.duration ?? 0);
@@ -131,6 +207,8 @@
 
       upNextEl.textContent = upNext;
       upNextEl.title = upNext;
+
+      setArtwork(artworkUrl);
 
       renderProgress();
       startProgressTimer();
@@ -143,6 +221,7 @@
       currentElapsed = 0;
       currentDuration = 0;
 
+      setArtwork("");
       renderProgress();
       requestAnimationFrame(fitAllText);
     }
