@@ -89,10 +89,12 @@
     const hasDuration = currentDuration > 0;
     const safeElapsed = Math.max(0, Math.min(currentElapsed, currentDuration || 0));
     const percent = hasDuration ? (safeElapsed / currentDuration) * 100 : 0;
+    const safePercent = Math.max(0, Math.min(percent, 100));
 
     elapsedTimeEl.textContent = hasDuration ? formatTime(safeElapsed) : "--:--";
     durationTimeEl.textContent = hasDuration ? formatTime(currentDuration) : "--:--";
-    progressFillEl.style.width = `${Math.max(0, Math.min(percent, 100))}%`;
+    progressFillEl.style.width = `${safePercent}%`;
+    root.style.setProperty("--bar-progress", hasDuration ? `${safePercent}%` : "0%");
   }
 
   function startProgressTimer() {
