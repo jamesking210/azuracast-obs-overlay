@@ -18,7 +18,6 @@
   const upNextEl = document.getElementById("upNext");
   const elapsedTimeEl = document.getElementById("elapsedTime");
   const remainingTimeEl = document.getElementById("remainingTime");
-  const durationTimeEl = document.getElementById("durationTime");
   const progressFillEl = document.getElementById("progressFill");
   const audioEl = document.getElementById("stationAudio");
 
@@ -56,18 +55,7 @@
     };
   }
 
-  function formatCurrentSong(songObj, fallback = FALLBACK_TRACK) {
-    const { artist, title, text } = getSongParts(songObj);
-
-    if (artist && title) return `${artist} - ${title}`;
-    if (text) return text;
-    if (title) return title;
-    if (artist) return artist;
-
-    return fallback;
-  }
-
-  function formatComingUp(songObj, fallback = FALLBACK_UP_NEXT) {
+  function formatSong(songObj, fallback) {
     const { artist, title, text } = getSongParts(songObj);
 
     if (artist && title) return `${artist} - ${title}`;
@@ -174,9 +162,9 @@
   }
 
   function fitAllText() {
-    fitText(currentTrackEl, 27, 19);
-    fitText(upNextEl, 21, 15);
-    fitText(stationNameEl, 25, 18);
+    fitText(currentTrackEl, 24, 17);
+    fitText(upNextEl, 19, 14);
+    fitText(stationNameEl, 22, 16);
   }
 
   function renderProgress() {
@@ -186,17 +174,18 @@
     const percent = hasDuration ? (safeElapsed / currentDuration) * 100 : 0;
     const safePercent = Math.max(0, Math.min(percent, 100));
 
-    elapsedTimeEl.textContent = hasDuration ? formatTime(safeElapsed) : "--:--";
+    if (elapsedTimeEl) {
+      elapsedTimeEl.textContent = hasDuration ? formatTime(safeElapsed) : "--:--";
+    }
 
     if (remainingTimeEl) {
       remainingTimeEl.textContent = hasDuration ? `-${formatTime(remaining)}` : "-:--";
     }
 
-    if (durationTimeEl) {
-      durationTimeEl.textContent = hasDuration ? formatTime(currentDuration) : "--:--";
+    if (progressFillEl) {
+      progressFillEl.style.width = `${safePercent}%`;
     }
 
-    progressFillEl.style.width = `${safePercent}%`;
     root.style.setProperty("--bar-progress", hasDuration ? `${safePercent}%` : "0%");
   }
 
@@ -223,8 +212,8 @@
 
       const data = await response.json();
 
-      const currentTrack = formatCurrentSong(data.now_playing, FALLBACK_TRACK);
-      const upNext = formatComingUp(data.playing_next, FALLBACK_UP_NEXT);
+      const currentTrack = formatSong(data.now_playing, FALLBACK_TRACK);
+      const upNext = formatSong(data.playing_next, FALLBACK_UP_NEXT);
       const currentArtworkUrl = getArtworkUrl(data.now_playing);
       const nextArtworkUrl = getArtworkUrl(data.playing_next);
 
