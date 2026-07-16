@@ -19,6 +19,42 @@
     return "bottom";
   }
 
+
+  function getUrlVolume(defaultVolume) {
+    const params = new URLSearchParams(window.location.search);
+    const raw = params.get("volume");
+
+    if (raw === null || raw === "") {
+      return clampVolume(defaultVolume);
+    }
+
+    const value = Number(raw);
+
+    if (!Number.isFinite(value)) {
+      return clampVolume(defaultVolume);
+    }
+
+    // Friendly options:
+    // volume=0.20 means 20%
+    // volume=20 also means 20%
+    // volume=75 also means 75%
+    if (value > 1 && value <= 100) {
+      return clampVolume(value / 100);
+    }
+
+    return clampVolume(value);
+  }
+
+  function clampVolume(value) {
+    const number = Number(value);
+
+    if (!Number.isFinite(number)) {
+      return 1;
+    }
+
+    return Math.max(0, Math.min(number, 1));
+  }
+
   const overlayPosition = getOverlayPosition();
   document.body.classList.add(`overlay-position-${overlayPosition}`);
 
@@ -42,6 +78,7 @@
   const REFRESH_MS = Number(cfg.refreshMs || 5000);
   const FALLBACK_TRACK = cfg.fallbackTrack || "Waiting for AzuraCast metadata...";
   const FALLBACK_UP_NEXT = cfg.fallbackUpNext || stationName;
+  const AUDIO_VOLUME = getUrlVolume(cfg.audioVolume ?? 1);
 
   let currentElapsed = 0;
   let currentDuration = 0;
@@ -262,7 +299,8 @@
     if (!audioEl) return;
 
     audioEl.src = STREAM_URL;
-    audioEl.volume = Number(cfg.audioVolume ?? 1);
+    audioEl.volume = AUDIO_VOLUME;
+    audioEl.muted = AUDIO_VOLUME <= 0;
 
     if (cfg.audioAutoplay === false) return;
 
