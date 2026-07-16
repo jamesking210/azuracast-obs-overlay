@@ -12,6 +12,23 @@ server {
     try_files /index.html =404;
   }
 
+
+  location = /top {
+    try_files /index.html =404;
+  }
+
+  location = /top/ {
+    return 301 /top;
+  }
+
+  location = /bottom {
+    try_files /index.html =404;
+  }
+
+  location = /bottom/ {
+    return 301 /bottom;
+  }
+
   location = /help {
     try_files /help.html =404;
   }
