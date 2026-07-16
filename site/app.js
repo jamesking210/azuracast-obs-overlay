@@ -7,6 +7,21 @@
   const root = document.documentElement;
   root.style.setProperty("--ticker-height", `${Number(cfg.tickerHeight || 52)}px`);
 
+  function getOverlayPosition() {
+    const params = new URLSearchParams(window.location.search);
+    const queryPosition = (params.get("position") || "").toLowerCase();
+    const path = window.location.pathname.toLowerCase();
+
+    if (queryPosition === "top" || path === "/top" || path === "/top/") {
+      return "top";
+    }
+
+    return "bottom";
+  }
+
+  const overlayPosition = getOverlayPosition();
+  document.body.classList.add(`overlay-position-${overlayPosition}`);
+
   const stationLogoSlotEl = document.getElementById("stationLogoSlot");
   const stationLogoEl = document.getElementById("stationLogo");
   const currentArtworkSlotEl = document.getElementById("currentArtworkSlot");
